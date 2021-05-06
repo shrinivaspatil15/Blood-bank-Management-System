@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="content-section">
+		<form method="POST" action="">
+			{{ form.hidden_tag() }}
+			<fieldset class="form-group">
+				<legend class="border-bottom mb-4">Blood Availability</legend>
+				<div class="form-group">
+					{{ form.a_positive.label(class="form-control-label") }}
+					{{ form.a_positive(class="form-control form-control-lg") }}	
+				</div>
+				<div class="form-group">
+					{{ form.a_negative.label(class="form-control-label") }}
+					{{ form.a_negative(class="form-control form-control-lg") }}	
+				</div>
+				<div class="form-group">
+					{{ form.b_positive.label(class="form-control-label") }}
+					{{ form.b_positive(class="form-control form-control-lg") }}	
+				</div>
+				<div class="form-group">
+					{{ form.b_negative.label(class="form-control-label") }}
+					{{ form.b_negative(class="form-control form-control-lg") }}	
+				</div>
+				<div class="form-group">
+					{{ form.ab_positive.label(class="form-control-label") }}
+					{{ form.ab_positive(class="form-control form-control-lg") }}	
+				</div>
+				<div class="form-group">
+					{{ form.ab_negative.label(class="form-control-label") }}
+					{{ form.ab_negative(class="form-control form-control-lg") }}	
+				</div>
+				<div class="form-group">
+					{{ form.o_positive.label(class="form-control-label") }}
+					{{ form.o_positive(class="form-control form-control-lg") }}	
+				</div>
+				<div class="form-group">
+					{{ form.o_negative.label(class="form-control-label") }}
+					{{ form.o_negative(class="form-control form-control-lg") }}	
+				</div>
+			</fieldset>
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}
+			</div>
+		</form>
+	</div>
+{% endblock content %}

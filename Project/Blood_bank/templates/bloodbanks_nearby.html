@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block content %}
+	<h4>Latitude:</h4>{{ latitude }}<br>
+	<h4>Longitude:</h4>{{ longitude }}<br>
+	<div id="map" style="width:100%; height: 400px" class="media content-section"></div>
+	{% for bloodbank in blood_banks.items %}
+		<article class="media content-section">
+		  <div class="media-body">
+		    <div class="article-metadata">
+		      <h2><a class="mr-2" href="{{ url_for('bloodbanks.bloodbank', bloodbank_id=bloodbank.id) }}">{{ bloodbank.name }}</a></h2>
+		      <small class="text-muted">{{ bloodbank.address }}<br></small>
+		      <b>Contact No.:</b> {{ bloodbank.contact_no }}<br>
+		      <b>Email-ID: </b><em>{{ bloodbank.email }}<br></em> 
+		      <b>Latitude:</b> {{ bloodbank.latitude }}<br>
+		      <b>Longitude:</b> {{ bloodbank.longitude }}<br>
+		    </div>
+		  </div>
+		</article>
+	{% endfor %}
+	{% for page_num in blood_banks.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+		{% if page_num %}
+			{% if page_num==blood_banks.page %}
+				<a class="btn btn-info mb-4" href="{{ url_for('bloodbanks.bloodbanks_nearby', page=page_num, latitude=latitude, longitude=longitude) }}">{{ page_num }}</a>
+			{% else %}
+				<a class="btn btn-outline-info mb-4" href="{{ url_for('bloodbanks.bloodbanks_nearby', page=page_num, latitude=latitude, longitude=longitude) }}">{{ page_num }}</a>
+			{% endif %}
+		{% else %}
+			...
+		{% endif %}
+	{% endfor %}
+
+	<script>
+		function myMap() {
+			var myCenter = new google.maps.LatLng({{ latitude }},{{ longitude }});
+
+			var mapProp= {
+			  center:myCenter,
+			  zoom:12,
+			};
+
+			bmap = new google.maps.Map(document.getElementById("map"),mapProp);
+			
+
+			{% for bloodbank in blood_banks.items %}
+				var markerContent = { "name":"{{bloodbank.name}}", "contact_no":"{{ bloodbank.contact_no }}", "email":"{{ bloodbank.email }}", "latitude":{{ bloodbank.latitude }}, "longitude":{{ bloodbank.longitude }} }
+				placeMarker(markerContent)
+			{% endfor %}
+
+			// for (i=0; i<blood_banks.total; i++){
+			// 	placeMarker(map, new google.maps.LatLng({{ blood_banks.items[0].latitude }},{{ blood_banks.items[0].longitude }}))
+			// }
+		}
+
+		function placeMarker(markerContent) {
+			var location = new google.maps.LatLng(markerContent.latitude, markerContent.longitude);
+
+		    var marker = new google.maps.Marker({
+		      position: location,
+		      map: bmap
+		    });
+
+		    marker.setMap(bmap)
+
+		    var infowindow = new google.maps.InfoWindow({
+		      content: markerContent.name + '<br>Contact No: ' + markerContent.contact_no +
+		      '<br>Email-ID: ' + markerContent.email
+      	    });
+
+      	    marker.addListener("click", () => {
+      	    	infowindow.open(bmap, marker)
+      	    });
+		    //infowindow.open(map,marker);
+		}
+	</script>
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEVlxGElqrqiRf74X3Ii-E2eF2S-TJVPY&callback=myMap"></script>
+
+{% endblock content %}

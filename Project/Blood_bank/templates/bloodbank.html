@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block content %}
+	<h1>{{ blood_bank.name }}</h1>
+	<p>{{ blood_bank.address }}</p>
+	<b>Email-ID: </b>{{ blood_bank.email }}<br>
+	<b>Contact No.: </b>{{ blood_bank.contact_no }}<br>
+	<div id="map" style="width:100%; height: 400px" class="media content-section"></div>
+	<div>
+		<h3>Blood Availability</h3>
+		<img src="/bloodbank/{{ blood_bank.id }}/available_blood.png" alt="my plot">
+		<table class="table table-striped">
+			<tbody>
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col">Blood Type</th>
+						<th scope="col">Available Units</th>
+					</tr>	
+				</thead>
+				<tr>
+					<td>A+</td>
+					<td>{{ stats.a_positive }}</td>
+				</tr>
+				<tr>
+					<td>A-</td>
+					<td>{{ stats.a_negative }}</td>
+				</tr>
+				<tr>
+					<td>B+</td>
+					<td>{{ stats.b_positive }}</td>
+				</tr>
+				<tr>
+					<td>B-</td>
+					<td>{{ stats.b_negative }}</td>
+				</tr>
+				<tr>
+					<td>AB+</td>
+					<td>{{ stats.ab_positive }}</td>
+				</tr>
+				<tr>
+					<td>AB-</td>
+					<td>{{ stats.ab_negative }}</td>
+				</tr>
+				<tr>
+					<td>O+</td>
+					<td>{{ stats.o_positive }}</td>
+				</tr>
+				<tr>
+					<td>O-</td>
+					<td>{{ stats.o_negative }}</td>
+				</tr>
+			</tbody>
+		</table>
+		{% if current_user.is_authenticated %}
+			{% if current_user.id==blood_bank.admin.id or current_user.role=='app_admin'%}
+				<div class="media-body">
+					<h3>Statistics</h3>
+					<img src="{{ url_for('bloodbanks.received_blood', bloodbank_id=blood_bank.id) }}" alt="my plot">
+					<img src="{{ url_for('bloodbanks.utilised_blood', bloodbank_id=blood_bank.id) }}" alt="my plot">
+				</div>
+			{% endif %}
+		{% endif %}
+	</div>
+	<script>
+		function myMap() {
+			var myCenter = new google.maps.LatLng({{ blood_bank.latitude }},{{ blood_bank.longitude }});
+
+			var mapProp= {
+			  center:myCenter,
+			  zoom:12,
+			};
+
+			var bmap = new google.maps.Map(document.getElementById("map"),mapProp);
+			var marker = new google.maps.Marker({
+		      position: myCenter,
+		      map: bmap
+		    });
+
+		    marker.setMap(bmap)
+		}
+	</script>
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDEVlxGElqrqiRf74X3Ii-E2eF2S-TJVPY&callback=myMap"></script>
+{% endblock content %}
